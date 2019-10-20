@@ -1,4 +1,6 @@
 let express = require('express');
+var bcrypt = require('bcryptjs');
+
 
 let app = express();
 
@@ -34,12 +36,12 @@ app.post('/', (request, response, next) => {
         role: body.role,
         email: body.email,
         img: body.img,
-        password: body.password
+        password: bcrypt.hashSync(body.password, 10)
     });
  
     user.save( (err, userSaved) => {
         if (err) {
-			return response.status(500).json({
+			return response.status(400).json({
 				ok: false,
 				message: 'Error al crear usuario',
 				errors: err
@@ -51,12 +53,51 @@ app.post('/', (request, response, next) => {
             user: userSaved
         });
     });
-
-    
-
-
-
-
 }); //END POST
+
+// actualizar usuario
+app.put('/:id', (req, res)=>{
+	var id = req.params.id;
+	var body = req.body;
+
+	User.findById(id, (err, usuario)=>{
+		if (err) {
+			return res.status(500).json({
+				ok: false,
+				message: 'Error al buscar usuario',
+				errors: err
+			});
+		}
+		if(!usuario){
+			return res.status(400).json({
+				ok: false,
+				message: 'Error: el usuario'+ id +'no existe',
+				errors: {
+					message: 'no existe un usuario con ese id'
+				}
+			});
+		}
+
+		usuario.name = body.name;
+		usuario.email = body.email;
+		usuario.role = body.role;
+		usuario.save(  (err, usuarioGuardado)=> {
+			if(err){
+				return res.status(400).json({
+					ok: false,
+					mensaje: 'error al actualizar el usuario',
+					errors: err
+				});
+			}
+			usuarioGuardado.password = '>:)';
+			res.status(200).json({
+				ok: true,
+				usuarioGuardado
+			});
+		});
+	});
+
+
+});
 
 module.exports = app;
