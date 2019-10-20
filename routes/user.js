@@ -1,7 +1,8 @@
 let express = require('express');
 var bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
-var SEED = require('../config/config').SEED;
+// var SEED = require('../config/config').SEED;
+var middlewareAuth = require('../middlewares/authentication');
 
 let app = express();
 
@@ -25,23 +26,13 @@ app.get('/', (request, response, next) => {
 	// response.status(200).json({
 	//     ok: true,
 	//     message: 'OK - Get users'
-	// });s
+	// });
 });
 
 
-// verificar token
-app.use('/', (req, res, next)=>{
-	var token = req.query.token;
-	jwt.verify(token, SEED, (err, decoded)=>{
-		if(err){
-			return res.status(401).json({ok: false, message:'token invalido', errors: err});
-		}
-		next(); // hace que puedas continuar con cualquiera de las funciones de abajo (post, put, delete)
-	});
-	
-});
 
-app.post('/', (request, response, next) => {
+
+app.post('/', middlewareAuth.verificaToken, (request, response, next) => {
     // PARA MANDAR POR URLENCODED NECESITAMOS IMPORTAR EL BODY PARSER EN app.js
     let body = request.body;
     let user = new User({
@@ -63,7 +54,8 @@ app.post('/', (request, response, next) => {
 
         response.status(201).json({
             ok: true,
-            user: userSaved
+			user: userSaved,
+			userToken: request.usuario
         });
     });
 }); //END POST
