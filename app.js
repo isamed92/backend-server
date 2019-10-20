@@ -24,7 +24,8 @@ mongoose.connection.openUri(
 
 // IMPORT ROUTES
 let appRoutes = require('./routes/app');
-let appUsers = require('./routes/user');
+let usersRoutes = require('./routes/user');
+let loginRoutes = require('./routes/login');
 
 // Escuchar Peticiones
 app.listen(3000, () => {
@@ -36,5 +37,6 @@ app.listen(3000, () => {
 
 // Routes
 // middleware declaration
-app.use('/users', appUsers);
+app.use('/users', usersRoutes);
+app.use('/login', loginRoutes);
 app.use('/', appRoutes);
