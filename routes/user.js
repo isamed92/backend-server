@@ -64,7 +64,7 @@ app.post('/', middlewareAuth.verificaToken, (request, response, next) => {
 
 
 // actualizar usuario
-app.put('/:id', (req, res)=>{
+app.put('/:id',middlewareAuth.verificaToken, (req, res)=>{
 	var id = req.params.id;
 	var body = req.body;
 
@@ -110,7 +110,7 @@ app.put('/:id', (req, res)=>{
 
 // BORRAR USUARIO
 
-app.delete('/:id', (req, res) =>{
+app.delete('/:id',middlewareAuth.verificaToken, (req, res) =>{
 	var id = req.params.id;
 
 	User.findByIdAndRemove(id, (err, usuarioBorrado)=>{
