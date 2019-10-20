@@ -100,4 +100,27 @@ app.put('/:id', (req, res)=>{
 
 });
 
+// BORRAR USUARIO
+
+app.delete('/:id', (req, res) =>{
+	var id = req.params.id;
+
+	User.findByIdAndRemove(id, (err, usuarioBorrado)=>{
+		if(err){
+			return res.status(500).json({
+				ok: false, mensaje: 'error al borrar usuario', errors: err
+			});
+		}
+		if(!usuarioBorrado){
+			return res.status(400).json({
+				ok: false, mensaje: 'no existe un usuario con ese id', errors: err
+			});
+		}
+		res.status(200).json({
+			ok: true,
+			usuarioBorrado
+		});
+	});
+});
+
 module.exports = app;
