@@ -56,7 +56,7 @@ app.put('/:id', middlewareAuth.verificaToken, (req, res)=>{
     });
 });
 //? DELETE
-app.delete('/:id', [], (req, res)=>{
+app.delete('/:id', middlewareAuth.verificaToken, (req, res)=>{
     var id = req.params.id;
 
 
