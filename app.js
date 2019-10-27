@@ -27,6 +27,7 @@ var appRoutes = require('./routes/app');
 var usersRoutes = require('./routes/user');
 var loginRoutes = require('./routes/login');
 var hospitalRoutes = require('./routes/hospital');
+var medicoRoutes = require('./routes/medico');
 
 // Escuchar Peticiones
 app.listen(3000, () => {
@@ -41,4 +42,5 @@ app.listen(3000, () => {
 app.use('/users', usersRoutes);
 app.use('/login', loginRoutes);
 app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicoRoutes);
 app.use('/', appRoutes);

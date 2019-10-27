@@ -1,5 +1,4 @@
 var express = require('express');
-var bcrypt = require('bcryptjs');
 var middlewareAuth = require('../middlewares/authentication');
 
 var app = express();
@@ -44,9 +43,9 @@ app.put('/:id', middlewareAuth.verificaToken, (req, res)=>{
             res.status(400).json({ok: false, message: 'hospital con id: '+ id + ' no encontrado (no existe)', errors: err});
         }
 
-        hospital.nombre = req.body.nombre;
+        hospital.nombre = body.nombre;
         // hospital.img = req.body.img;
-        hospital.usuario = req.body.usuario;
+        hospital.usuario = body.usuario;
         hospital.save( (err, hospitalSave) => {
             if(err){
                 res.status(400).json({ok: false, message: 'ERROR: update hospital error', errors: err});
