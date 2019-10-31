@@ -32,33 +32,34 @@ app.get('/todo/:busqueda', (req, res, next) => {
 	// });
 });
 
+//? BUSQUEDA POR COLECCION
+app.get('/coleccion/:tabla/:busqueda', (req, res) => {
+	var busqueda = req.params.busqueda;
+	var expresionRegular = new RegExp(busqueda, 'i');
+	var tabla = req.params.tabla;
 
-//? BUSQUEDA POR COLECCION 
-app.get('/coleccion/:tabla/:busqueda', (req, res)=>{
-    var busqueda = req.params.busqueda;
-    var expresionRegular = new RegExp(busqueda, 'i');
-    var tabla = req.params.tabla;
-    
-    switch (tabla) {
-        case 'usuario':
-            buscarUsuarios(busqueda, expresionRegular).then(usuarios=>{
-                res.status(200).json({ok: true, usuarios: usuarios});
-            });
-            break;
-        case 'medico':
-            buscarMedicos(busqueda, expresionRegular).then(medicos=>{
-                res.status(200).json({ok: true, medicos: medicos});
-            });
-            break;
-        case 'hospital':
-            buscarMedicos(busqueda, expresionRegular).then(hospitales=>{
-                res.status(200).json({ok: true, hospitales: hospitales});
-            });
-            break;
-        default:
-            res.status(400).json({ok: false, message: 'no existe una coleccion con ese nombre'})
-            break;
-    }
+	switch (tabla) {
+		case 'usuario':
+			buscarUsuarios(busqueda, expresionRegular).then(usuarios => {
+				res.status(200).json({ ok: true, usuarios: usuarios });
+			});
+			break;
+		case 'medico':
+			buscarMedicos(busqueda, expresionRegular).then(medicos => {
+				res.status(200).json({ ok: true, medicos: medicos });
+			});
+			break;
+		case 'hospital':
+			buscarMedicos(busqueda, expresionRegular).then(hospitales => {
+				res.status(200).json({ ok: true, hospitales: hospitales });
+			});
+			break;
+		default:
+			res
+				.status(400)
+				.json({ ok: false, message: 'no existe una coleccion con ese nombre' });
+			break;
+	}
 });
 
 function buscarHospitales(busqueda, regex) {
