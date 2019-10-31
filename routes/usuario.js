@@ -6,26 +6,35 @@ var middlewareAuth = require('../middlewares/authentication');
 
 let app = express();
 
-let User = require('../models/user');
+let Usuario = require('../models/usuario');
 
 // Rutas
 app.get('/', (request, response, next) => {
-	User.find({}, '_id name email img role').exec((err, users) => {
-		if (err) {
-			return response.status(500).json({
-				ok: false,
-				message: 'Error cargando usuarios',
-				errors: err
+	var desde = request.query.desde || 0;
+	desde = Number(desde);
+	Usuario
+		.find({}, '_id nombre email img role')
+		.skip(desde)
+		.limit(5)
+		.exec((err, usuarios) => {
+			if (err) {
+				return response.status(500).json({
+					ok: false,
+					message: 'Error cargando usuarios',
+					errors: err
+				});
+			}
+			Usuario.count({}, (err, conteo)=>{	
+				response.status(200).json({
+					ok: true,
+					total: conteo,
+					usuarios: usuarios
+				});
 			});
-		}
-		response.status(200).json({
-			ok: true,
-			users: users
-		});
 	});
 	// response.status(200).json({
 	//     ok: true,
-	//     message: 'OK - Get users'
+	//     message: 'OK - Get usuarios'
 	// });
 });
 
@@ -35,15 +44,15 @@ app.get('/', (request, response, next) => {
 app.post('/', middlewareAuth.verificaToken, (request, response, next) => {
     // PARA MANDAR POR URLENCODED NECESITAMOS IMPORTAR EL BODY PARSER EN app.js
     let body = request.body;
-    let user = new User({
-        name: body.name,
+    let usuario = new Usuario({
+        nombre: body.nombre,
         role: body.role,
         email: body.email,
         img: body.img,
         password: bcrypt.hashSync(body.password, 10)
     });
  
-    user.save( (err, userSaved) => {
+    usuario.save( (err, usuarioSaved) => {
         if (err) {
 			return response.status(400).json({
 				ok: false,
@@ -54,8 +63,8 @@ app.post('/', middlewareAuth.verificaToken, (request, response, next) => {
 
         response.status(201).json({
             ok: true,
-			user: userSaved,
-			userToken: request.usuario
+			usuario: usuarioSaved,
+			usuarioToken: request.usuario
         });
     });
 }); //END POST
@@ -68,7 +77,7 @@ app.put('/:id',middlewareAuth.verificaToken, (req, res)=>{
 	var id = req.params.id;
 	var body = req.body;
 
-	User.findById(id, (err, usuario)=>{
+	Usuario.findById(id, (err, usuario)=>{
 		if (err) {
 			return res.status(500).json({
 				ok: false,
@@ -86,7 +95,7 @@ app.put('/:id',middlewareAuth.verificaToken, (req, res)=>{
 			});
 		}
 
-		usuario.name = body.name;
+		usuario.nombre = body.nombre;
 		usuario.email = body.email;
 		usuario.role = body.role;
 		usuario.save(  (err, usuarioGuardado)=> {
@@ -113,7 +122,7 @@ app.put('/:id',middlewareAuth.verificaToken, (req, res)=>{
 app.delete('/:id',middlewareAuth.verificaToken, (req, res) =>{
 	var id = req.params.id;
 
-	User.findByIdAndRemove(id, (err, usuarioBorrado)=>{
+	Usuario.findByIdAndRemove(id, (err, usuarioBorrado)=>{
 		if(err){
 			return res.status(500).json({
 				ok: false, mensaje: 'error al borrar usuario', errors: err
