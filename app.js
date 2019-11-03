@@ -22,6 +22,11 @@ mongoose.connection.openUri(
 	}
 );
 
+// SERVER INDEX CONFIG
+// var serveIndex = require('serve-index');
+// app.use(express.static(__dirname + '/'))
+// app.use('/uploads', serveIndex(__dirname + '/uploads'));
+
 // IMPORT ROUTES
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
