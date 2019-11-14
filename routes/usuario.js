@@ -24,7 +24,7 @@ app.get('/', (request, response, next) => {
 					errors: err
 				});
 			}
-			Usuario.count({}, (err, conteo)=>{	
+			Usuario.count({}, (err, conteo)=>{
 				response.status(200).json({
 					ok: true,
 					total: conteo,
@@ -41,7 +41,7 @@ app.get('/', (request, response, next) => {
 
 
 
-app.post('/', middlewareAuth.verificaToken, (request, response, next) => {
+app.post('/', [], (request, response, next) => {
     // PARA MANDAR POR URLENCODED NECESITAMOS IMPORTAR EL BODY PARSER EN app.js
     let body = request.body;
     let usuario = new Usuario({
@@ -51,7 +51,7 @@ app.post('/', middlewareAuth.verificaToken, (request, response, next) => {
         img: body.img,
         password: bcrypt.hashSync(body.password, 10)
     });
- 
+
     usuario.save( (err, usuarioSaved) => {
         if (err) {
 			return response.status(400).json({
